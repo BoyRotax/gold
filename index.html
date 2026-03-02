@@ -3,169 +3,177 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Buddy Pro - ราคาทองแม่นยำ</title>
+    <title>Gold Buddy - เช็คทองครบทุกหน่วย</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #D4AF37; --soft-pink: #DAA520; --dark-gold: #8B7355; }
-        body { background: var(--soft-pink); font-family: 'Sarabun', sans-serif; color: #333; }
-        .main-card { border-radius: 30px; border: none; box-shadow: 0 15px 35px rgba(212, 175, 55, 0.15); }
-        .price-header { background: linear-gradient(135deg, #fdfcfb 0%, #e2d1c3 100%); border-radius: 25px; padding: 20px; margin-bottom: 20px; border: 1px solid #ddd; }
-        .gold-value { color: #b22222; font-weight: bold; font-size: 2.2rem; }
-        .nav-pills .nav-link { border-radius: 15px; color: var(--dark-gold); }
-        .nav-pills .nav-link.active { background-color: var(--gold); color: white; }
-        .input-group-text { background: var(--gold); color: white; border: none; }
+        :root { --main-gold: #D4AF37; --bg-soft: #FCF8F3; --deep-gold: #B8860B; }
+        body { background: var(--bg-soft); font-family: 'Sarabun', sans-serif; }
+        .card-main { border-radius: 30px; border: none; box-shadow: 0 10px 40px rgba(0,0,0,0.1); background: #fff; overflow: hidden; }
+        .gold-gradient { background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728); padding: 25px; color: #5D4037; text-align: center; }
+        .unit-card { background: #fff; border: 1px solid #eee; border-radius: 15px; padding: 10px; transition: 0.3s; }
+        .unit-card:hover { border-color: var(--main-gold); background: #FFFDF5; }
+        .val-big { font-size: 1.5rem; font-weight: bold; color: var(--deep-gold); }
+        .currency-toggle { background: #eee; border-radius: 20px; padding: 5px; display: inline-flex; }
+        .currency-toggle button { border: none; background: none; padding: 5px 20px; border-radius: 15px; transition: 0.3s; }
+        .currency-toggle button.active { background: var(--deep-gold); color: #fff; }
     </style>
 </head>
 <body>
 
 <div class="container py-4">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card main-card p-4">
-                <div class="text-center mb-4">
-                    <h3 class="fw-bold">✨ Gold Buddy by BoY ✨</h3>
-                    <span class="badge bg-success" id="status">กำลังอัปเดตราคาล่าสุด...</span>
+        <div class="col-lg-6 col-md-12">
+            <div class="card card-main">
+                
+                <div class="gold-gradient shadow-sm">
+                    <h3 class="fw-bold mb-0">Gold Buddy By Boy ✨</h3>
+                    <div class="small fw-bold">ระบบคำนวณราคาทองแม่นยำทุกหน่วย</div>
                 </div>
 
-                <div class="price-header text-center shadow-sm">
-                    <div class="row">
-                        <div class="col-6 border-end">
-                            <small class="text-muted d-block">Gold Spot (USD)</small>
-                            <span id="liveSpot" class="fw-bold fs-4">--</span>
+                <div class="card-body p-4">
+                    <div class="d-flex justify-content-between mb-4 small border-bottom pb-2">
+                        <span>Gold Spot: <b id="txtSpot">--</b></span>
+                        <span>$1 = <b id="txtRate">--</b> บาท</span>
+                    </div>
+
+                    <div class="d-flex gap-2 mb-4">
+                        <button id="btnBar" class="btn btn-outline-warning w-100 active shadow-sm" onclick="setGold('bar')">ทองแท่ง 96.5%</button>
+                        <button id="btnOrn" class="btn btn-outline-warning w-100 shadow-sm" onclick="setGold('ornament')">รูปพรรณ 96.5%</button>
+                    </div>
+
+                    <div class="p-3 bg-light rounded-4 mb-4">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <label class="fw-bold">💰 คำนวณจากงบประมาณ:</label>
+                            <div class="currency-toggle">
+                                <button id="curTHB" class="active" onclick="setCur('THB')">THB</button>
+                                <button id="curUSD" onclick="setCur('USD')">USD</button>
+                            </div>
+                        </div>
+                        <input type="number" id="inputBudget" class="form-control form-control-lg border-0 shadow-sm" placeholder="ระบุงบที่มี..." oninput="calcAll()">
+                        <div class="mt-3 text-center">
+                            <span class="text-muted small">ซื้อทองได้ประมาณ:</span>
+                            <div id="resBudget" class="val-big text-danger">-- บาท -- สลึง</div>
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <label class="fw-bold mb-3">⚖️ เช็คราคาจากน้ำหนัก (กรอกช่องใดช่องหนึ่ง):</label>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <div class="unit-card">
+                                <small class="text-muted">หน่วย: บาท</small>
+                                <input type="number" id="inBaht" class="form-control border-0 p-0 fw-bold" value="1" oninput="syncUnits('baht')">
+                            </div>
                         </div>
                         <div class="col-6">
-                            <small class="text-muted d-block">ค่าเงินบาท (THB)</small>
-                            <span id="liveRate" class="fw-bold fs-4">--</span>
+                            <div class="unit-card">
+                                <small class="text-muted">หน่วย: สลึง</small>
+                                <input type="number" id="inSalung" class="form-control border-0 p-0 fw-bold" oninput="syncUnits('salung')">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="unit-card">
+                                <small class="text-muted">หน่วย: กรัม (g)</small>
+                                <input type="number" id="inGram" class="form-control border-0 p-0 fw-bold" oninput="syncUnits('gram')">
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="unit-card">
+                                <small class="text-muted">หน่วย: ออนซ์ (oz)</small>
+                                <input type="number" id="inOz" class="form-control border-0 p-0 fw-bold" oninput="syncUnits('oz')">
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <ul class="nav nav-pills nav-fill mb-4 bg-light p-1" style="border-radius: 18px;">
-                    <li class="nav-item">
-                        <button class="nav-link active" id="btn-bar" onclick="changeType('bar')">ทองแท่ง 96.5%</button>
-                    </li>
-                    <li class="nav-item">
-                        <button class="nav-link" id="btn-orn" onclick="changeType('ornament')">รูปพรรณ 96.5%</button>
-                    </li>
-                </ul>
-
-                <div class="mb-4">
-                    <label class="form-label fw-bold">ระบุน้ำหนักทอง:</label>
-                    <div class="input-group input-group-lg">
-                        <input type="number" id="weight" class="form-control" value="1" oninput="calculate()">
-                        <select id="unit" class="form-select" onchange="calculate()" style="max-width: 110px;">
-                            <option value="baht">บาท</option>
-                            <option value="oz">ออนซ์</option>
-                            <option value="gram">กรัม</option>
-                        </select>
+                    <div class="text-center mt-4 p-3 border border-warning rounded-4 bg-warning-subtle">
+                        <small class="d-block text-muted">ราคาประเมินรวมทั้งสิ้น:</small>
+                        <h2 id="finalPrice" class="fw-bold text-dark mb-0">0 .-</h2>
                     </div>
+
                 </div>
-
-                <div class="text-center p-3 mb-3" style="background: #fff9e6; border-radius: 20px;">
-                    <span class="text-muted">ราคาประมาณการรวมทั้งสิ้น</span>
-                    <div id="totalThb" class="gold-value">0.00</div>
-                    <small class="text-muted" id="detailText">คำนวณที่ทองแท่ง 96.5%</small>
-                </div>
-
-                <button class="btn btn-outline-secondary btn-sm w-100" onclick="fetchPrices()">🔄 กดเพื่ออัปเดตราคาใหม่</button>
             </div>
-
-            <div class="mt-4 shadow-sm" style="border-radius: 20px; overflow: hidden; height: 300px;">
-                <div id="tradingview_widget"></div>
-            </div>
+            <p class="text-center mt-3 text-muted" style="font-size: 0.7rem;">
+                อ้างอิงความบริสุทธิ์ 96.5% | ค่ากำเหน็จเฉลี่ย 800.- ต่อบาท
+            </p>
         </div>
     </div>
 </div>
 
-<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
-    let spotPrice = 0;
-    let thbRate = 0;
-    let currentMode = 'bar';
+    let spot = 0, rate = 0;
+    let goldType = 'bar', curType = 'THB';
+    const G_BAHT = 15.244, G_OZ = 31.1035;
 
-    // 1. ดึงข้อมูลราคาจริงจาก API (Binance สำหรับ Spot และ ExchangeRate สำหรับ THB)
-    async function fetchPrices() {
-        document.getElementById('status').innerText = "กำลังโหลด...";
+    async function loadData() {
         try {
-            // ดึงราคา Gold Spot (XAU/USDT) จาก Binance (ตัวแทนราคาโลกที่ไวที่สุด)
-            const goldRes = await fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT');
-            const goldData = await goldRes.json();
-            spotPrice = parseFloat(goldData.price);
-
-            // ดึงค่าเงินบาท
-            const rateRes = await fetch('https://open.er-api.com/v6/latest/USD');
-            const rateData = await rateRes.json();
-            thbRate = rateData.rates.THB;
-
-            document.getElementById('liveSpot').innerText = spotPrice.toLocaleString();
-            document.getElementById('liveRate').innerText = thbRate.toFixed(2);
-            document.getElementById('status').innerText = "อัปเดตแล้ว: " + new Date().toLocaleTimeString();
-            
-            calculate();
-        } catch (error) {
-            document.getElementById('status').innerText = "เชื่อมต่อล้มเหลว!";
-            console.error(error);
-        }
+            const [g, r] = await Promise.all([
+                fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT'),
+                fetch('https://open.er-api.com/v6/latest/USD')
+            ]);
+            const gd = await g.json(); const rd = await r.json();
+            spot = parseFloat(gd.price); rate = rd.rates.THB;
+            document.getElementById('txtSpot').innerText = "$"+spot.toLocaleString();
+            document.getElementById('txtRate').innerText = rate.toFixed(2);
+            syncUnits('baht');
+        } catch (e) { alert("API Error"); }
     }
 
-    function changeType(type) {
-        currentMode = type;
-        document.getElementById('btn-bar').classList.toggle('active', type === 'bar');
-        document.getElementById('btn-orn').classList.toggle('active', type === 'ornament');
-        calculate();
+    function setGold(t) {
+        goldType = t;
+        document.getElementById('btnBar').classList.toggle('active', t === 'bar');
+        document.getElementById('btnOrn').classList.toggle('active', t === 'ornament');
+        calcAll();
     }
 
-    function calculate() {
-        if (!spotPrice || !thbRate) return;
+    function setCur(c) {
+        curType = c;
+        document.getElementById('curTHB').classList.toggle('active', c === 'THB');
+        document.getElementById('curUSD').classList.toggle('active', c === 'USD');
+        calcAll();
+    }
 
-        const weight = parseFloat(document.getElementById('weight').value) || 0;
-        const unit = document.getElementById('unit').value;
-
-        // แปลงน้ำหนักเป็นหน่วย "บาททอง (15.244g)"
-        let weightInBaht = 0;
-        if (unit === 'baht') weightInBaht = weight;
-        else if (unit === 'oz') weightInBaht = (weight * 31.1035) / 15.244;
-        else if (unit === 'gram') weightInBaht = weight / 15.244;
-
-        /* สูตรคำนวณทองไทย 96.5% (สูตรมาตรฐานสมาคมฯ):
-           ราคา = [(Spot + Premium) * Rate * 15.244 * 0.965] / 31.1035
-           *เราใส่ค่า Premium เฉลี่ยที่ $5-10 เพื่อความใกล้เคียง
-        */
-        const premium = 7; 
-        let finalPrice = ((spotPrice + premium) * thbRate * 15.244 * 0.965) / 31.1035;
+    function syncUnits(source) {
+        let b = 0;
+        const v = parseFloat(document.getElementById('in'+source.charAt(0).toUpperCase()+source.slice(1)).value) || 0;
         
-        // คำนวณตามน้ำหนักที่กรอก
-        let total = finalPrice * weightInBaht;
+        if(source === 'baht') b = v;
+        else if(source === 'salung') b = v / 4;
+        else if(source === 'gram') b = v / G_BAHT;
+        else if(source === 'oz') b = (v * G_OZ) / G_BAHT;
 
-        // ถ้าเป็นรูปพรรณ บวกค่ากำเหน็จ (เฉลี่ยบาทละ 800)
-        if (currentMode === 'ornament') {
-            total += (weightInBaht * 800);
-            document.getElementById('detailText').innerText = "ราคารูปพรรณ (รวมค่ากำเหน็จประมาณการ)";
-        } else {
-            document.getElementById('detailText').innerText = "ราคาทองแท่ง 96.5% (ราคาขายออก)";
-        }
-
-        document.getElementById('totalThb').innerText = total.toLocaleString(undefined, {minimumFractionDigits: 0, maximumFractionDigits: 0}) + " .-";
+        if(source !== 'baht') document.getElementById('inBaht').value = b.toFixed(4);
+        if(source !== 'salung') document.getElementById('inSalung').value = (b * 4).toFixed(2);
+        if(source !== 'gram') document.getElementById('inGram').value = (b * G_BAHT).toFixed(3);
+        if(source !== 'oz') document.getElementById('inOz').value = ((b * G_BAHT) / G_OZ).toFixed(4);
+        
+        calcAll();
     }
 
-    // โหลดกราฟ
-    new TradingView.widget({
-        "autosize": true,
-        "symbol": "OANDA:XAUUSD",
-        "interval": "H",
-        "theme": "light",
-        "style": "2",
-        "locale": "th",
-        "container_id": "tradingview_widget",
-        "hide_top_toolbar": true
-    });
+    function calcAll() {
+        if(!spot) return;
+        const b = parseFloat(document.getElementById('inBaht').value) || 0;
+        const basePrice = ((spot + 10) * rate * G_BAHT * 0.965) / G_OZ;
+        let final = b * basePrice;
+        if(goldType === 'ornament') final += (b * 800);
+        
+        document.getElementById('finalPrice').innerText = Math.round(final).toLocaleString() + " .-";
 
-    // เรียกทำงานครั้งแรก
-    fetchPrices();
-    // อัปเดตทุกๆ 30 วินาที
-    setInterval(fetchPrices, 30000);
+        // คำนวณงบประมาณ
+        const budgetInput = parseFloat(document.getElementById('inputBudget').value) || 0;
+        let budgetThb = curType === 'USD' ? (budgetInput * rate) : budgetInput;
+        if(budgetThb > 0) {
+            let tBaht = budgetThb / (goldType === 'ornament' ? basePrice + 800 : basePrice);
+            let integerBaht = Math.floor(tBaht);
+            let salung = ((tBaht - integerBaht) * 4).toFixed(1);
+            document.getElementById('resBudget').innerText = `${integerBaht} บาท ${salung} สลึง`;
+        } else {
+            document.getElementById('resBudget').innerText = "--";
+        }
+    }
+
+    window.onload = loadData;
 </script>
-
 </body>
 </html>
