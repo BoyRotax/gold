@@ -3,137 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gold Buddy - มาตรฐานสากล & ไทย</title>
+    <title>Gold Boy Pro - Standard & History</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #D4AF37; --bg: #FFF9F5; }
+        :root { --gold: #D4AF37; --bg: #FFF9F5; --danger: #dc3545; }
         body { background: var(--bg); font-family: 'Sarabun', sans-serif; padding: 15px; }
-        .main-card { max-width: 480px; margin: auto; border-radius: 30px; border: none; box-shadow: 0 15px 40px rgba(0,0,0,0.1); background: white; overflow: hidden; }
-        .header { background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728); padding: 20px; text-align: center; color: #443400; }
-        .price-display { background: #fdfdfd; border-radius: 20px; padding: 15px; border: 1px solid #eee; text-align: center; }
-        .delta-val { font-size: 0.8rem; font-weight: bold; }
-        .up { color: #28a745; } .down { color: #dc3545; }
-        .total-box { background: #222; color: #FFD700; border-radius: 25px; padding: 25px; text-align: center; border: 3px solid var(--gold); margin: 20px 0; }
-        .btn-refresh { background: #443400; color: #FFD700; border: none; border-radius: 15px; padding: 12px; font-weight: bold; width: 100%; transition: 0.3s; }
-        .unit-input { background: #f8f9fa; border-radius: 12px; padding: 8px; border: 1px solid #eee; margin-bottom: 10px; }
-        .unit-input label { font-size: 0.7rem; color: #888; display: block; font-weight: bold; }
+        .main-card { max-width: 500px; margin: auto; border-radius: 30px; border: none; box-shadow: 0 15px 40px rgba(0,0,0,0.1); background: white; overflow: hidden; }
+        .header { background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728); padding: 15px; text-align: center; color: #443400; }
+        .price-display { background: #fdfdfd; border-radius: 15px; padding: 10px; border: 1px solid #eee; text-align: center; }
+        .total-box { background: #222; color: #FFD700; border-radius: 20px; padding: 20px; text-align: center; border: 2px solid var(--gold); margin: 15px 0; transition: 0.3s; }
+        .alert-active { border-color: var(--danger); box-shadow: 0 0 15px rgba(220, 53, 69, 0.5); border-width: 3px; }
+        .unit-input { background: #f8f9fa; border-radius: 10px; padding: 5px 10px; border: 1px solid #eee; margin-bottom: 8px; }
+        .unit-input label { font-size: 0.65rem; color: #888; display: block; font-weight: bold; }
         .unit-input input { border: none; background: transparent; width: 100%; font-weight: bold; outline: none; font-size: 1.1rem; }
+        .btn-refresh { background: #443400; color: #FFD700; border: none; border-radius: 12px; padding: 10px; font-weight: bold; width: 100%; margin-bottom: 15px; }
+        .history-table { font-size: 0.75rem; max-height: 150px; overflow-y: auto; border: 1px solid #eee; border-radius: 10px; }
+        .alert-box { background: #fff5f5; border: 1px dashed var(--danger); border-radius: 10px; padding: 10px; margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-<div class="main-card">
-    <div class="header shadow-sm">
-        <h4 class="fw-bold mb-0">✨ Gold Boy ✨</h4>
-        <small id="lastUpdate" style="font-size: 0.7rem; opacity: 0.9;">กำลังเชื่อมต่อระบบ...</small>
+<div class="main-card shadow-lg">
+    <div class="header">
+        <h5 class="fw-bold mb-0">✨ Gold Boy Pro ✨</h5>
+        <small id="lastUpdate" style="font-size: 0.65rem; opacity: 0.8;">กำลังโหลด...</small>
     </div>
 
     <div class="p-4">
-        <div class="row g-2 mb-4 text-center">
-            <div class="col-6">
-                <div class="price-display shadow-sm">
-                    <small class="text-muted">Spot Gold (USD/oz)</small>
-                    <b id="spotNow" class="d-block fs-5">--</b>
-                    <div id="spotDiff" class="delta-val">--</div>
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="price-display shadow-sm">
-                    <small class="text-muted">ค่าเงิน USD / THB</small>
-                    <b id="rateNow" class="d-block fs-5">--</b>
-                    <div id="rateDiff" class="delta-val">--</div>
-                </div>
-            </div>
-            <div class="chart-container shadow-sm">
-                <div class="tradingview-widget-container" style="height:100%;width:100%">
-                    <div id="tradingview_gold"></div>
-                    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-                    <script type="text/javascript">
-                    new TradingView.widget({
-                        "autosize": true,
-                        "symbol": "OANDA:XAUUSD",
-                        "interval": "D",
-                        "timezone": "Asia/Bangkok",
-                        "theme": "light",
-                        "style": "3",
-                        "locale": "th",
-                        "toolbar_bg": "#f1f3f6",
-                        "enable_publishing": false,
-                        "hide_top_toolbar": true,
-                        "save_image": false,
-                        "container_id": "tradingview_gold"
-                    });
-                    </script>
-                </div>
-        </div>
+        <div class="row g-2 mb-3 text-center">
+            <div class="col-6"><div class="price-display shadow-sm"><small class="text-muted">Spot (USD/oz)</small><b id="spotNow" class="d-block">--</b><small id="spotDiff" class="delta-val">--</small></div></div>
+            <div class="col-6"><div class="price-display shadow-sm"><small class="text-muted">บาท/USD</small><b id="rateNow" class="d-block">--</b><small id="rateDiff" class="delta-val">--</small></div></div>
         </div>
 
-        <div class="btn-group w-100 mb-4 rounded-3 shadow-sm overflow-hidden">
-            <input type="radio" class="btn-check" name="gtype" id="tBar" checked onclick="reCalc()">
-            <label class="btn btn-outline-warning py-2" for="tBar">ทองแท่ง</label>
-            <input type="radio" class="btn-check" name="gtype" id="tOrn" onclick="reCalc()">
-            <label class="btn btn-outline-warning py-2" for="tOrn">รูปพรรณ</label>
+        <div class="alert-box">
+            <label class="fw-bold small text-danger">🔔 ตั้งเป้าหมายราคา (ทองแท่ง 1 บาท):</label>
+            <div class="input-group input-group-sm">
+                <input type="number" id="alertTarget" class="form-control" placeholder="ใส่ราคาที่ต้องการ..." oninput="reCalc()">
+            </div>
+            <div id="alertMsg" class="small mt-1 text-center fw-bold"></div>
         </div>
 
-        <div class="fw-bold mb-2 small text-muted">⚖️ น้ำหนักมาตรฐานไทย & สากล:</div>
-        <div class="row g-2 mb-3">
-            <div class="col-6">
-                <div class="unit-input shadow-sm">
-                    <label>บาททอง (TH)</label>
-                    <input type="number" id="inBaht" value="1" step="0.0001" oninput="sync('baht')">
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="unit-input shadow-sm">
-                    <label>สลึง (TH)</label>
-                    <input type="number" id="inSalung" step="0.01" oninput="sync('salung')">
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="unit-input">
-                    <label>กรัม (Gram)</label>
-                    <input type="number" id="inGram" step="0.0001" oninput="sync('gram')">
-                </div>
-            </div>
-            <div class="col-6">
-                <div class="unit-input">
-                    <label>ออนซ์ (Oz - สากล)</label>
-                    <input type="number" id="inOz" step="0.000001" oninput="sync('oz')">
-                </div>
-            </div>
+        <div class="btn-group w-100 mb-3 btn-group-sm">
+            <input type="radio" class="btn-check" name="gt" id="tBar" checked onclick="reCalc()"><label class="btn btn-outline-warning" for="tBar">ทองแท่ง</label>
+            <input type="radio" class="btn-check" name="gt" id="tOrn" onclick="reCalc()"><label class="btn btn-outline-warning" for="tOrn">ทองรูปพรรณ</label>
         </div>
 
-        <div class="total-box shadow">
-            <small class="d-block opacity-75">ราคาสุทธิโดยประมาณ</small>
+        <div class="row g-2 mb-2">
+            <div class="col-6"><div class="unit-input"><label>บาททองไทย</label><input type="number" id="inBaht" value="1" step="0.0001" oninput="sync('baht')"></div></div>
+            <div class="col-6"><div class="unit-input"><label>สลึงไทย</label><input type="number" id="inSalung" step="0.01" oninput="sync('salung')"></div></div>
+            <div class="col-6"><div class="unit-input"><label>กรัม (Gram)</label><input type="number" id="inGram" step="0.0001" oninput="sync('gram')"></div></div>
+            <div class="col-6"><div class="unit-input"><label>ออนซ์ (Troy oz)</label><input type="number" id="inOz" step="0.000001" oninput="sync('oz')"></div></div>
+        </div>
+
+        <div class="total-box shadow" id="mainTotal">
+            <small class="d-block opacity-75">ราคาสุทธิประเมิน</small>
             <h1 id="finalPrice" class="fw-bold mb-0">0 .-</h1>
-            <small id="modeText" style="color: #fff; opacity: 0.6; font-size: 0.7rem;">(ทองแท่ง 96.5%)</small>
+            <small id="modeText" style="font-size: 0.65rem; opacity: 0.6;">(ทองแท่ง 96.5%)</small>
         </div>
 
-        <div class="p-3 rounded-4 shadow-sm" style="background: #FFF0F0;">
-            <label class="fw-bold small mb-2">💰 คำนวณจากงบ (บาท):</label>
-            <input type="number" id="inBudget" class="form-control mb-2 border-0 shadow-sm" placeholder="ระบุจำนวนเงินที่มี..." oninput="reCalc()">
-            <div class="text-center small">ซื้อได้: <b id="resBudget" class="text-danger">-- บาท -- สลึง</b></div>
+        <button class="btn-refresh shadow-sm" onclick="updateData()">อัปเดตราคา & บันทึกประวัติ 🔄</button>
+
+        <div class="fw-bold small mb-1">📜 ประวัติการเช็ค:</div>
+        <div class="history-table mb-3">
+            <table class="table table-sm table-striped mb-0">
+                <thead class="table-dark"><tr><th>เวลา</th><th>ประเภท</th><th>หนัก</th><th>ราคา</th></tr></thead>
+                <tbody id="historyBody"></tbody>
+            </table>
         </div>
 
-        <div class="mt-4">
-            <button class="btn-refresh shadow" onclick="updateData()">อัปเดตราคาล่าสุด 🔄</button>
-        </div>
+        <div id="tradingview_gold" style="height: 200px; border-radius: 15px; overflow: hidden; border: 1px solid #eee;"></div>
     </div>
 </div>
 
+<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
 <script>
-    let currentSpot = 0, currentRate = 0;
-    let prevSpot = 0, prevRate = 0;
-    
-    // มาตรฐานทองคำ
-    const G_BAHT = 15.244;           // 1 บาทไทย = 15.244 กรัม
-    const G_OZ = 31.1034768;         // 1 Troy Ounce = 31.1034768 กรัม
-    const SALUNG_DIV = 4;            // 1 บาท = 4 สลึง
+    let currentSpot = 0, currentRate = 0, prevSpot = 0;
+    // มาตรฐานเป๊ะ
+    const G_BAHT = 15.244;
+    const G_OZ = 31.1034768;
 
     async function updateData() {
-        const status = document.getElementById('lastUpdate');
-        status.innerText = "กำลังรีเฟรชราคา...";
         try {
             const [sRes, rRes] = await Promise.all([
                 fetch('https://api.binance.com/api/v3/ticker/price?symbol=PAXGUSDT').then(r => r.json()),
@@ -142,74 +92,69 @@
             const nS = parseFloat(sRes.price);
             const nR = rRes.rates.THB;
             if (currentSpot !== 0) prevSpot = currentSpot; else prevSpot = nS;
-            if (currentRate !== 0) prevRate = currentRate; else prevRate = nR;
             currentSpot = nS; currentRate = nR;
-            showDiff('spotDiff', currentSpot, prevSpot, '$');
-            showDiff('rateDiff', currentRate, prevRate, '');
+
             document.getElementById('spotNow').innerText = "$" + currentSpot.toLocaleString(undefined, {minimumFractionDigits: 2});
             document.getElementById('rateNow').innerText = currentRate.toFixed(2);
-            status.innerText = "อัปเดตเมื่อ: " + new Date().toLocaleTimeString();
-            reCalc();
-        } catch (e) {
-            status.innerText = "เชื่อมต่อล้มเหลว กรุณาลองใหม่";
-        }
-    }
-
-    function showDiff(id, n, o, u) {
-        const el = document.getElementById(id);
-        const d = n - o;
-        if(d === 0) { el.innerText = "คงที่"; el.className = "delta-val text-muted"; return; }
-        el.innerText = (d > 0 ? "+" : "") + d.toFixed(2) + u;
-        el.className = "delta-val " + (d > 0 ? "up" : "down");
+            document.getElementById('lastUpdate').innerText = "Last Update: " + new Date().toLocaleTimeString();
+            
+            reCalc(true); 
+        } catch (e) { console.error("API Connection Error"); }
     }
 
     function sync(src) {
-        const input = document.getElementById('in' + src.charAt(0).toUpperCase() + src.slice(1));
-        let v = parseFloat(input.value) || 0;
-        let gramWeight = 0;
+        let val = parseFloat(document.getElementById('in' + src.charAt(0).toUpperCase() + src.slice(1)).value) || 0;
+        let g = 0;
 
-        // แปลงทุกหน่วยเป็น "กรัม" เป็นค่ากลางก่อน
-        if (src === 'baht') gramWeight = v * G_BAHT;
-        else if (src === 'salung') gramWeight = v * (G_BAHT / SALUNG_DIV);
-        else if (src === 'gram') gramWeight = v;
-        else if (src === 'oz') gramWeight = v * G_OZ;
-        
-        // อัปเดตช่องอื่นๆ จากน้ำหนักกรัม
-        if (src !== 'baht') document.getElementById('inBaht').value = gramWeight > 0 ? (gramWeight / G_BAHT).toFixed(4) : "";
-        if (src !== 'salung') document.getElementById('inSalung').value = gramWeight > 0 ? ((gramWeight / G_BAHT) * SALUNG_DIV).toFixed(2) : "";
-        if (src !== 'gram') document.getElementById('inGram').value = gramWeight > 0 ? gramWeight.toFixed(4) : "";
-        if (src !== 'oz') document.getElementById('inOz').value = gramWeight > 0 ? (gramWeight / G_OZ).toFixed(6) : "";
+        if (src === 'baht') g = val * G_BAHT;
+        else if (src === 'salung') g = val * (G_BAHT / 4);
+        else if (src === 'gram') g = val;
+        else if (src === 'oz') g = val * G_OZ;
+
+        if (src !== 'baht') document.getElementById('inBaht').value = g > 0 ? (g / G_BAHT).toFixed(4) : "";
+        if (src !== 'salung') document.getElementById('inSalung').value = g > 0 ? ((g / G_BAHT) * 4).toFixed(2) : "";
+        if (src !== 'gram') document.getElementById('inGram').value = g > 0 ? g.toFixed(4) : "";
+        if (src !== 'oz') document.getElementById('inOz').value = g > 0 ? (g / G_OZ).toFixed(6) : "";
         
         reCalc();
     }
 
-    function reCalc() {
+    function reCalc(saveHistory = false) {
         if(!currentSpot || !currentRate) return;
-        const bahtVal = parseFloat(document.getElementById('inBaht').value) || 0;
+        const bVal = parseFloat(document.getElementById('inBaht').value) || 0;
         const isOrn = document.getElementById('tOrn').checked;
-        
-        // สูตรทองไทย 96.5% + Premium (เฉลี่ยค่าขนส่ง/ประกัน/ความเสี่ยง)
-        let base = ((currentSpot + 10) * currentRate * G_BAHT * 0.965) / G_OZ;
-        let total = bahtVal * base;
-        if (isOrn) total += (bahtVal * 800); // ค่ากำเหน็จเฉลี่ย
+        const target = parseFloat(document.getElementById('alertTarget').value) || 0;
 
-        document.getElementById('finalPrice').innerText = Math.round(total).toLocaleString() + " .-";
-        document.getElementById('modeText').innerText = isOrn ? "(ทองรูปพรรณ +กำเหน็จ)" : "(ทองแท่ง 96.5%)";
+        let basePrice = ((currentSpot + 10) * currentRate * G_BAHT * 0.965) / G_OZ;
+        let total = bVal * (isOrn ? basePrice + 800 : basePrice);
+        let final = Math.round(total);
 
-        let budget = parseFloat(document.getElementById('inBudget').value) || 0;
-        if(budget > 0) {
-            let tB = budget / (isOrn ? base + 800 : base);
-            let bPart = Math.floor(tB);
-            let sPart = ((tB - bPart) * 4).toFixed(1);
-            document.getElementById('resBudget').innerText = `${bPart} บาท ${sPart} สลึง`;
+        document.getElementById('finalPrice').innerText = final.toLocaleString() + " .-";
+        document.getElementById('modeText').innerText = isOrn ? "(ทองรูปพรรณ 96.5%)" : "(ทองแท่ง 96.5%)";
+
+        const pricePerBaht = Math.round(basePrice);
+        const alertBox = document.getElementById('mainTotal');
+        const alertMsg = document.getElementById('alertMsg');
+
+        if (target > 0 && pricePerBaht <= target) {
+            alertBox.classList.add('alert-active');
+            alertMsg.innerText = "🚨 ราคาโดนใจแล้ว! (" + pricePerBaht.toLocaleString() + " / บ.)";
+            alertMsg.className = "small mt-1 text-center fw-bold text-danger";
         } else {
-            document.getElementById('resBudget').innerText = "-- บาท -- สลึง";
+            alertBox.classList.remove('alert-active');
+            alertMsg.innerText = target > 0 ? "เป้าหมาย: " + target.toLocaleString() : "";
+            alertMsg.className = "small mt-1 text-center text-muted";
+        }
+
+        if (saveHistory && bVal > 0) {
+            const row = `<tr><td>${new Date().toLocaleTimeString()}</td><td>${isOrn?'รูปพรรณ':'แท่ง'}</td><td>${bVal.toFixed(2)}บ.</td><td>${final.toLocaleString()}</td></tr>`;
+            document.getElementById('historyBody').insertAdjacentHTML('afterbegin', row);
         }
     }
 
+    new TradingView.widget({"autosize": true, "symbol": "OANDA:XAUUSD", "interval": "H", "theme": "light", "style": "3", "locale": "th", "hide_top_toolbar": true, "container_id": "tradingview_gold"});
     updateData();
     setInterval(updateData, 60000);
 </script>
-
 </body>
 </html>
